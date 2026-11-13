@@ -12,7 +12,6 @@ export const site = {
   admins: [] as string[],
   nav: [
     { href: '#packs', label: 'Packs' },
-    { href: '#cupon', label: 'Pedí tu cupón' },
     { href: '#tus-cupones', label: 'Tus cupones' },
   ] as { href: string; label: string }[],
   appNav: [] as { href: string; label: string }[],
