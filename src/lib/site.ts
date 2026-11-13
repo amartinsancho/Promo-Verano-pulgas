@@ -2,7 +2,7 @@
 export const site = {
   name: 'Veterinaria Cola Inquieta',
   description:
-    'Verano sin Pulgas: sacá tu cupón con el pack justo para tu perro o gato. Promo de prueba válida hasta el 28/02/2027.',
+    'Verano sin Pulgas: sacá tu cupón con el pack justo para tu perro o gato. Promo válida hasta el 28/02/2027.',
   logo: '',
   accounts: false,
   verifyEmail: false,

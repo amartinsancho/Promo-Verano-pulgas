@@ -48,8 +48,7 @@ export function CuponCard({ cupon }: { cupon: Cupon }) {
           <Fila etiqueta="Generado">{formatearFecha(cupon.fecha)}</Fila>
         </dl>
         <p className="mt-6 rounded-2xl bg-cream px-4 py-3 text-sm leading-6 text-ink/80">
-          Este cupón no reserva turno. Servicios y precios son parte de una prueba de funcionamiento del
-          formulario y no son recomendaciones veterinarias.
+          Este cupón no reserva turno ni es una recomendación veterinaria.
         </p>
       </div>
     </article>

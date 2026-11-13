@@ -59,10 +59,6 @@ const pasos = [
 export default function Home() {
   return (
     <main>
-      <p className="bg-accent px-4 py-2 text-center text-sm font-medium text-ink">
-        Servicios y precios de prueba: forman parte de una prueba de funcionamiento del formulario.
-      </p>
-
       {/* Hero dividido */}
       <section className="relative overflow-hidden">
         <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-24 pt-10 sm:px-6 sm:pb-28 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
@@ -229,8 +225,7 @@ export default function Home() {
           </a>
         </div>
         <p className="mx-auto mt-10 max-w-6xl px-4 text-sm leading-6 text-white/85 sm:px-6">
-          Servicios y precios son parte de una prueba de funcionamiento del formulario. No son recomendaciones
-          veterinarias.
+          No son recomendaciones veterinarias.
         </p>
       </section>
     </main>

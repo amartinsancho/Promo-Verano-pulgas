@@ -20,8 +20,7 @@ export function SiteFooter() {
         <div>
           <p className="font-semibold text-cream">Letra chica</p>
           <p className="mt-2 leading-6">
-            Los servicios y los precios son parte de una prueba de funcionamiento del formulario. No son
-            recomendaciones veterinarias. El cupón no reserva turno.
+            No son recomendaciones veterinarias. El cupón no reserva turno.
           </p>
         </div>
       </div>
