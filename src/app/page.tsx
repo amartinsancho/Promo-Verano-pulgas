@@ -198,10 +198,10 @@ export default function Home() {
                 </div>
               </dl>
               <p className="mt-5 inline-block -rotate-1 rounded-2xl bg-accent px-4 py-2 font-semibold">
-                «Capacidad de prueba: 6 baños por día»
+                «Atendemos hasta 6 baños por día»
               </p>
               <p className="mt-4 text-sm leading-6 text-ink/80">
-                Dato informativo: no limita los cupones que se pueden sacar. Además, el cupón no reserva turno.
+                Dato informativo: no limita los cupones que se pueden sacar. El cupón no reserva turno.
               </p>
             </div>
           </div>

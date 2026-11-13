@@ -1,30 +1,21 @@
-# Totalum project
+# Verano sin Pulgas · Veterinaria Cola Inquieta
 
-A Next.js 16 app built with [Totalum](https://totalum.app). It runs on Cloudflare Workers; its data is a D1 (SQLite)
-database used through Drizzle ORM (`src/db/`), with better-auth for accounts (`src/lib/auth.ts`).
+Landing de una sola página de la promo "Verano sin Pulgas" (vence el 28/02/2027 inclusive, hora Argentina).
 
-## Run locally
+## Qué hace
+- Elegís perro o gato; el pack se asigna solo según la especie y el peso (Liviano, Mediano, Grande o Felino). Con gato no se pide ni se guarda el peso.
+- Genera un cupón con código (CI-XXXX-XXXX). Un mismo correo con la misma mascota no obtiene un segundo cupón.
+- Cuenta regresiva con la fecha del dispositivo. Pasada la fecha de fin, el formulario se reemplaza por "La promo terminó".
+- "Tus cupones" muestra lo guardado en este dispositivo; cada uno se abre, se puede imprimir o cerrar.
 
-You need Node 22 and npm. On Linux, the local Workers runtime needs glibc 2.35 or newer (Ubuntu 22.04, Debian 12).
+## Datos
+No hay servidor ni cuentas: todo vive en el `localStorage` del navegador.
+- `kod_vet_cupones`: lista de cupones (código, nombre, correo, mascota, tipo, pack, precio, fecha, estado "Sin usar"). Nunca se guarda el peso.
+- `kod_vet_demo`: marca que indica que ya se cargaron los 3 cupones de ejemplo en la primera visita.
+- La lista solo se reinicia vaciando `kod_vet_cupones`. El estado de un cupón no se modifica desde esta página, y no hay sistema de reservas.
 
-1. Download the source code and its `.env` from Totalum (with the VCaaS API: `GET /api/v1/vcaas/projects/<id>/source-code`
-   and `GET …/github/env`, whose `envDev` is the file), and put the `.env` in the project folder.
-2. `npm ci`
-3. `npm run dev`, then open <http://localhost:3100> (`PORT=4000 npm run dev` for another port).
+## Probar la promo vencida
+Cambiá la fecha del dispositivo a marzo de 2027 o posterior y recargá.
 
-`npm run dev` first applies the migrations in `drizzle/` to the database it serves: with `TOTALUM_ENV=dev` and a
-`TOTALUM_PROJECT_KEY` (the `.env` above), your project's dev database on Totalum, the one the preview shows, so rows
-you create there appear in the preview too; otherwise (a project without a dev database, or no key) a local database
-in `.wrangler/`, which never reaches Totalum (to start it again empty, stop the server and delete `.wrangler/state`).
-
-The built-in integrations (e-mail, AI, files, …) call Totalum with `TOTALUM_PROJECT_KEY` from `.env` and are billed
-to your project as usual. Without a key the app still runs, and only those calls fail with `SDK_NOT_CONFIGURED`.
-
-## Commands
-
-- `npm run db:generate`: after you change `src/db/schema.ts`, writes the next migration to `drizzle/`. The next
-  `npm run dev` applies it (or run `npm run db:migrate`, or `npm run db:migrate -- --local` for the local database).
-- `npm run db:migrate`: applies the migrations to the project's database on Totalum, the one `TOTALUM_ENV` in `.env`
-  selects (`dev` or `live`).
-- `npm run build:preview`: the Cloudflare Workers build Totalum deploys. `npx wrangler dev` then serves that build on
-  <http://localhost:8787> in the Workers runtime, on the local database in `.wrangler/`.
+## Desarrollo
+`npm install` y `npm run dev` (http://localhost:3100). Chequeos: `npm run check`.

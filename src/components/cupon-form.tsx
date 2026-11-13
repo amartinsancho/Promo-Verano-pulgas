@@ -4,10 +4,10 @@ import { type FormEvent, useEffect, useRef, useState } from 'react';
 
 import { BotonImprimir, CuponCard } from '@/components/cupon-card';
 import { useNow } from '@/components/countdown';
-import { type Cupon, agregarCupon, codigosExistentes } from '@/lib/cupones';
+import { type Cupon, agregarCupon, codigosExistentes, existeCupon } from '@/lib/cupones';
 import { PROMO_VENCE, type Tipo, asignarPack, formatPrecio, generarCodigo, parsePeso, promoCerrada } from '@/lib/packs';
 
-type Errores = Partial<Record<'nombre' | 'mascota' | 'tipo' | 'peso' | 'guardar', string>>;
+type Errores = Partial<Record<'nombre' | 'correo' | 'mascota' | 'tipo' | 'peso' | 'guardar', string>>;
 
 const campo =
   'w-full min-w-0 rounded-2xl border-2 border-ink/20 bg-white px-4 py-3.5 text-base text-ink placeholder:text-ink/50 transition-colors focus:border-brand-deep focus:outline-none focus-visible:ring-4 focus-visible:ring-brand/25 aria-[invalid=true]:border-red-700';
@@ -39,6 +39,7 @@ export function CuponForm() {
   const cerrada = now !== null && promoCerrada(now);
 
   const [nombre, setNombre] = useState('');
+  const [correo, setCorreo] = useState('');
   const [mascota, setMascota] = useState('');
   const [tipo, setTipo] = useState<Tipo | ''>('');
   const [peso, setPeso] = useState('');
@@ -66,11 +67,14 @@ export function CuponForm() {
     const n = nombre.trim().replace(/\s+/g, ' ');
     const m = mascota.trim().replace(/\s+/g, ' ');
     if (n.length < 2) e.nombre = 'Escribí tu nombre y apellido.';
+    const c = correo.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c)) e.correo = 'Escribí un correo válido, por ejemplo nombre@correo.com.';
     if (m.length < 1) e.mascota = 'Contanos cómo se llama tu mascota.';
     if (!tipo) e.tipo = 'Elegí si es perro o gato.';
     if (tipo === 'perro' && parsePeso(peso) === null) {
       e.peso = 'Poné el peso en kilos, con un número mayor a 0 (por ejemplo 12 o 10,5).';
     }
+    if (!e.correo && m && existeCupon(c, m)) e.guardar = `Ya hay un cupón para ${m} con ese correo. Lo encontrás abajo, en "Tus cupones".`;
     const asignado = asignarPack(tipo, peso);
     if (!asignado || Object.keys(e).length) {
       setErrores(e);
@@ -79,6 +83,7 @@ export function CuponForm() {
     const nuevo: Cupon = {
       codigo: generarCodigo(codigosExistentes()),
       nombre: n,
+      correo: c,
       mascota: m,
       tipo: asignado.especie,
       pack: asignado.nombre,
@@ -97,6 +102,7 @@ export function CuponForm() {
   function otro() {
     setCupon(null);
     setNombre('');
+    setCorreo('');
     setMascota('');
     setTipo('');
     setPeso('');
@@ -177,6 +183,35 @@ export function CuponForm() {
           {errores.nombre ? (
             <p className={errorCls} id="err-nombre">
               {errores.nombre}
+            </p>
+          ) : null}
+        </div>
+
+        <div>
+          <label className="text-sm font-medium" htmlFor="correo">
+            Correo electrónico
+          </label>
+          <input
+            aria-describedby={errores.correo ? 'err-correo' : undefined}
+            aria-invalid={!!errores.correo}
+            autoComplete="email"
+            className={`${campo} mt-1.5`}
+            id="correo"
+            inputMode="email"
+            maxLength={120}
+            name="correo"
+            onChange={(e) => {
+              setCorreo(e.target.value);
+              setErrores((x) => ({ ...x, correo: undefined, guardar: undefined }));
+            }}
+            placeholder="Ej.: lucia@correo.com"
+            required
+            type="email"
+            value={correo}
+          />
+          {errores.correo ? (
+            <p className={errorCls} id="err-correo">
+              {errores.correo}
             </p>
           ) : null}
         </div>
@@ -311,8 +346,7 @@ export function CuponForm() {
           Generar mi cupón
         </button>
         <p className="text-sm leading-6 text-ink/70">
-          Prueba de funcionamiento: no se envía nada a ningún servidor, el cupón queda guardado en este
-          dispositivo.
+          Tus datos quedan guardados solo en este dispositivo. El cupón no reserva turno.
         </p>
       </form>
     );

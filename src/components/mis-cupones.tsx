@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { BotonImprimir, CuponCard } from '@/components/cupon-card';
 import { IconoTicket } from '@/components/ilustraciones';
-import { EVENTO_CUPONES, type Cupon, leerCupones } from '@/lib/cupones';
+import { EVENTO_CUPONES, type Cupon, leerCupones, sembrarEjemplos } from '@/lib/cupones';
 import { formatPrecio } from '@/lib/packs';
 
 const fechaCorta = (iso: string) => {
@@ -21,6 +21,7 @@ export function MisCupones() {
 
   useEffect(() => {
     const cargar = () => setLista(leerCupones());
+    sembrarEjemplos();
     cargar();
     window.addEventListener(EVENTO_CUPONES, cargar);
     window.addEventListener('storage', cargar);
