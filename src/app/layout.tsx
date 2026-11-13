@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Baloo_2, Rubik } from 'next/font/google';
 import type { ReactNode } from 'react';
 
 import { DevBanner } from '@/components/dev-banner';
@@ -24,12 +25,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // Fonts (design.md §1): `const heading = <Face>({ subsets: ['latin'], variable: '--font-heading' })` from
 // `next/font/google` (and `--font-body`), then both `.variable` classes in the <html> className below.
-const fonts = '';
+const heading = Baloo_2({ subsets: ['latin'], variable: '--font-heading', display: 'swap' });
+const body = Rubik({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
+const fonts = `${heading.variable} ${body.variable}`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html className={fonts} lang="en">
-      <body className="flex min-h-dvh flex-col bg-white font-sans text-zinc-900 antialiased">
+    <html className={fonts} lang="es-AR">
+      <body className="flex min-h-dvh flex-col bg-cream font-sans text-ink antialiased">
         <SiteHeader />
         <div className="flex-1">{children}</div>
         <SiteFooter />
