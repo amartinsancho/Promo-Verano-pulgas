@@ -90,33 +90,20 @@ export function asignarPack(tipo: string | null | undefined, pesoKg?: number | s
 
 export const formatPrecio = (n: number) => '$' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-// Sin 0/O, 1/I/L (ambiguos).
-const ALFABETO = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+export const CONTADOR_KEY = 'kod_vet_contador';
 
-function azar(max: number): number {
-  const c = typeof globalThis !== 'undefined' ? globalThis.crypto : undefined;
-  if (c?.getRandomValues) {
-    const limite = 256 - (256 % max);
-    const b = new Uint8Array(1);
-    do c.getRandomValues(b);
-    while (b[0] >= limite);
-    return b[0] % max;
-  }
-  return Math.floor(Math.random() * max);
-}
+const RE_VER = /^VER-(\d{4,})$/;
 
-function bloque(n: number) {
-  let s = '';
-  for (let i = 0; i < n; i++) s += ALFABETO[azar(ALFABETO.length)];
-  return s;
-}
-
-/** Código CI-XXXX-XXXX que no está en `existentes`. */
-export function generarCodigo(existentes: Iterable<string>): string {
+/** Código VER-0001, VER-0002… el siguiente al mayor entre `ultimo` y los códigos `existentes` (los viejos CI-… se respetan). */
+export function generarCodigo(existentes: Iterable<string>, ultimo = 0): string {
   const usados = new Set(existentes);
-  for (let i = 0; i < 1000; i++) {
-    const codigo = `CI-${bloque(4)}-${bloque(4)}`;
-    if (!usados.has(codigo)) return codigo;
+  let n = Math.max(0, Math.floor(ultimo) || 0);
+  for (const c of usados) {
+    const m = RE_VER.exec(c);
+    if (m) n = Math.max(n, Number(m[1]));
   }
-  throw new Error('No se pudo generar un código único');
+  let codigo: string;
+  do codigo = `VER-${String(++n).padStart(4, '0')}`;
+  while (usados.has(codigo));
+  return codigo;
 }

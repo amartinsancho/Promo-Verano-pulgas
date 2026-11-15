@@ -4,7 +4,7 @@ Landing de una sola página de la promo "Verano sin Pulgas" (vence el 28/02/2027
 
 ## Qué hace
 - Elegís perro o gato; el pack se asigna solo según la especie y el peso (Liviano, Mediano, Grande o Felino). Con gato no se pide ni se guarda el peso.
-- Genera un cupón con código (CI-XXXX-XXXX). Un mismo correo con la misma mascota no obtiene un segundo cupón.
+- Genera un cupón con código (VER-0001). Un mismo correo con la misma mascota no obtiene un segundo cupón.
 - Cuenta regresiva con la fecha del dispositivo. Pasada la fecha de fin, el formulario se reemplaza por "La promo terminó".
 - "Tus cupones" muestra lo guardado en este dispositivo; cada uno se abre, se puede imprimir o cerrar.
 

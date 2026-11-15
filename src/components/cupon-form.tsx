@@ -4,8 +4,8 @@ import { type FormEvent, useEffect, useRef, useState } from 'react';
 
 import { BotonImprimir, CuponCard } from '@/components/cupon-card';
 import { useNow } from '@/components/countdown';
-import { type Cupon, agregarCupon, codigosExistentes, existeCupon } from '@/lib/cupones';
-import { PROMO_VENCE, type Tipo, asignarPack, formatPrecio, generarCodigo, parsePeso, promoCerrada } from '@/lib/packs';
+import { type Cupon, agregarCupon, existeCupon, reservarCodigo } from '@/lib/cupones';
+import { PROMO_VENCE, type Tipo, asignarPack, formatPrecio, parsePeso, promoCerrada } from '@/lib/packs';
 
 type Errores = Partial<Record<'nombre' | 'correo' | 'mascota' | 'tipo' | 'peso' | 'guardar', string>>;
 
@@ -81,7 +81,7 @@ export function CuponForm() {
       return;
     }
     const nuevo: Cupon = {
-      codigo: generarCodigo(codigosExistentes()),
+      codigo: reservarCodigo(),
       nombre: n,
       correo: c,
       mascota: m,

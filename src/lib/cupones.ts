@@ -1,4 +1,4 @@
-import { STORAGE_KEY, type Pack, type Tipo } from '@/lib/packs';
+import { CONTADOR_KEY, STORAGE_KEY, generarCodigo, type Pack, type Tipo } from '@/lib/packs';
 
 // Registro guardado en localStorage. A propósito no tiene campo de peso.
 export type Cupon = {
@@ -80,9 +80,9 @@ export function existeCupon(correo: string, mascota: string): boolean {
 }
 
 const EJEMPLOS: Cupon[] = [
-  { estado: 'Sin usar', codigo: 'CI-K7M2-9QXA', nombre: 'Lucía Fernández', correo: 'lucia.fernandez@ejemplo.com.ar', mascota: 'Tobi', tipo: 'perro', pack: 'Mediano', precio: 31000, fecha: '2026-11-04T14:20:00-03:00' },
-  { estado: 'Sin usar', codigo: 'CI-P4TZ-H8NW', nombre: 'Martín Gómez', correo: 'martin.gomez@ejemplo.com.ar', mascota: 'Mishi', tipo: 'gato', pack: 'Felino', precio: 19000, fecha: '2026-11-08T10:05:00-03:00' },
-  { estado: 'Sin usar', codigo: 'CI-R3VD-5LCE', nombre: 'Camila Rossi', correo: 'camila.rossi@ejemplo.com.ar', mascota: 'Bruno', tipo: 'perro', pack: 'Grande', precio: 39000, fecha: '2026-11-11T18:40:00-03:00' },
+  { estado: 'Sin usar', codigo: 'VER-0001', nombre: 'Lucía Fernández', correo: 'lucia.fernandez@ejemplo.com.ar', mascota: 'Tobi', tipo: 'perro', pack: 'Mediano', precio: 31000, fecha: '2026-11-04T14:20:00-03:00' },
+  { estado: 'Sin usar', codigo: 'VER-0002', nombre: 'Martín Gómez', correo: 'martin.gomez@ejemplo.com.ar', mascota: 'Mishi', tipo: 'gato', pack: 'Felino', precio: 19000, fecha: '2026-11-08T10:05:00-03:00' },
+  { estado: 'Sin usar', codigo: 'VER-0003', nombre: 'Camila Rossi', correo: 'camila.rossi@ejemplo.com.ar', mascota: 'Bruno', tipo: 'perro', pack: 'Grande', precio: 39000, fecha: '2026-11-11T18:40:00-03:00' },
 ];
 
 function guardar(lista: unknown[]): boolean {
@@ -102,6 +102,7 @@ export function sembrarEjemplos() {
     window.localStorage.setItem(FLAG_DEMO, '1');
     if (window.localStorage.getItem(STORAGE_KEY)) return;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(EJEMPLOS));
+    window.localStorage.setItem(CONTADOR_KEY, String(EJEMPLOS.length));
   } catch {
     /* sin almacenamiento: no hay ejemplos */
   }
@@ -129,8 +130,28 @@ export function vaciarCupones(): boolean {
 export function restaurarEjemplos(): boolean {
   try {
     window.localStorage.setItem(FLAG_DEMO, '1');
+    window.localStorage.setItem(CONTADOR_KEY, String(EJEMPLOS.length));
   } catch {
     return false;
   }
   return guardar(EJEMPLOS);
+}
+
+function leerContador(): number {
+  try {
+    return Number(window.localStorage.getItem(CONTADOR_KEY)) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** Siguiente código VER-0000 libre; deja guardado el contador para que nunca se repita. */
+export function reservarCodigo(): string {
+  const codigo = generarCodigo(codigosExistentes(), leerContador());
+  try {
+    window.localStorage.setItem(CONTADOR_KEY, String(Number(codigo.slice(4))));
+  } catch {
+    /* sin almacenamiento: igual se calcula con los cupones existentes */
+  }
+  return codigo;
 }

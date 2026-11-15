@@ -35,7 +35,7 @@ const confianza = [
   },
   {
     titulo: 'Cupón con código único',
-    texto: 'Cada cupón tiene su código propio, tipo CI-XXXX-XXXX.',
+    texto: 'Cada cupón tiene su código propio, tipo VER-0001.',
     svg: <path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8zM14 6v12" />,
   },
   {
