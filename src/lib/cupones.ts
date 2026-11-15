@@ -39,15 +39,7 @@ export function leerCupones(): Cupon[] {
 
 /** Lee lo existente, agrega el nuevo al final y guarda. Devuelve false si el navegador no deja guardar. */
 export function agregarCupon(cupon: Cupon): boolean {
-  try {
-    const lista = leerCrudo();
-    lista.push(cupon);
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
-    window.dispatchEvent(new Event(EVENTO_CUPONES));
-    return true;
-  } catch {
-    return false;
-  }
+  return guardar([...leerCrudo(), cupon]);
 }
 
 export function codigosExistentes(): string[] {
@@ -87,20 +79,58 @@ export function existeCupon(correo: string, mascota: string): boolean {
   });
 }
 
-/** Primera visita: carga tres cupones de ejemplo, una sola vez. */
+const EJEMPLOS: Cupon[] = [
+  { estado: 'Sin usar', codigo: 'CI-K7M2-9QXA', nombre: 'Lucía Fernández', correo: 'lucia.fernandez@ejemplo.com.ar', mascota: 'Tobi', tipo: 'perro', pack: 'Mediano', precio: 31000, fecha: '2026-11-04T14:20:00-03:00' },
+  { estado: 'Sin usar', codigo: 'CI-P4TZ-H8NW', nombre: 'Martín Gómez', correo: 'martin.gomez@ejemplo.com.ar', mascota: 'Mishi', tipo: 'gato', pack: 'Felino', precio: 19000, fecha: '2026-11-08T10:05:00-03:00' },
+  { estado: 'Sin usar', codigo: 'CI-R3VD-5LCE', nombre: 'Camila Rossi', correo: 'camila.rossi@ejemplo.com.ar', mascota: 'Bruno', tipo: 'perro', pack: 'Grande', precio: 39000, fecha: '2026-11-11T18:40:00-03:00' },
+];
+
+function guardar(lista: unknown[]): boolean {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+    window.dispatchEvent(new Event(EVENTO_CUPONES));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Primera visita: carga tres cupones de ejemplo, una sola vez. Nunca pisa datos existentes. */
 export function sembrarEjemplos() {
   try {
     if (window.localStorage.getItem(FLAG_DEMO)) return;
     window.localStorage.setItem(FLAG_DEMO, '1');
     if (window.localStorage.getItem(STORAGE_KEY)) return;
-    const base = { estado: 'Sin usar' as const };
-    const ejemplos: Cupon[] = [
-      { ...base, codigo: 'CI-K7M2-9QXA', nombre: 'Lucía Fernández', correo: 'lucia.fernandez@ejemplo.com.ar', mascota: 'Tobi', tipo: 'perro', pack: 'Mediano', precio: 31000, fecha: '2026-11-04T14:20:00-03:00' },
-      { ...base, codigo: 'CI-P4TZ-H8NW', nombre: 'Martín Gómez', correo: 'martin.gomez@ejemplo.com.ar', mascota: 'Mishi', tipo: 'gato', pack: 'Felino', precio: 19000, fecha: '2026-11-08T10:05:00-03:00' },
-      { ...base, codigo: 'CI-R3VD-5LCE', nombre: 'Camila Rossi', correo: 'camila.rossi@ejemplo.com.ar', mascota: 'Bruno', tipo: 'perro', pack: 'Grande', precio: 39000, fecha: '2026-11-11T18:40:00-03:00' },
-    ];
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(ejemplos));
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(EJEMPLOS));
   } catch {
     /* sin almacenamiento: no hay ejemplos */
   }
+}
+
+/** Cambia datos de un cupón (nunca el código ni el estado). */
+export function actualizarCupon(codigo: string, cambios: Partial<Pick<Cupon, 'nombre' | 'correo' | 'mascota'>>): boolean {
+  const lista = leerCrudo();
+  const i = lista.findIndex((c) => (c as { codigo?: unknown } | null)?.codigo === codigo);
+  if (i < 0) return false;
+  lista[i] = { ...(lista[i] as object), ...cambios };
+  return guardar(lista);
+}
+
+export function eliminarCupon(codigo: string): boolean {
+  return guardar(leerCrudo().filter((c) => (c as { codigo?: unknown } | null)?.codigo !== codigo));
+}
+
+/** Vacía la lista de cupones. */
+export function vaciarCupones(): boolean {
+  return guardar([]);
+}
+
+/** Vuelve a los valores iniciales: los tres cupones de ejemplo. */
+export function restaurarEjemplos(): boolean {
+  try {
+    window.localStorage.setItem(FLAG_DEMO, '1');
+  } catch {
+    return false;
+  }
+  return guardar(EJEMPLOS);
 }
