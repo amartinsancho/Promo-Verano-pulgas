@@ -2,7 +2,7 @@
 
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 
-import { BotonImprimir, CuponCard } from '@/components/cupon-card';
+import { BotonImprimir, BotonWhatsApp, CuponCard } from '@/components/cupon-card';
 import { useNow } from '@/components/countdown';
 import { type Cupon, agregarCupon, existeCupon, reservarCodigo } from '@/lib/cupones';
 import { PROMO_VENCE, type Tipo, asignarPack, formatPrecio, parsePeso, promoCerrada } from '@/lib/packs';
@@ -140,6 +140,7 @@ export function CuponForm() {
         </div>
         <CuponCard cupon={cupon} />
         <div className="flex flex-wrap gap-3 print:hidden">
+          <BotonWhatsApp cupon={cupon} />
           <BotonImprimir />
           <button
             className="inline-flex min-h-12 items-center justify-center rounded-full bg-ink px-6 py-3 font-semibold text-cream transition-colors hover:bg-brand-deep focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-deep/30"
